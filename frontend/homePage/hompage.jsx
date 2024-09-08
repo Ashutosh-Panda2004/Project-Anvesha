@@ -1,0 +1,682 @@
+import React, { useEffect, useRef, useState } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import seamlessVideo from "/src/assets/seamless.mp4";
+import efficientVideo from "/src/assets/efficient.mp4";
+import innovationVideo from "/src/assets/innovation.mp4";
+import inspiredVideo from "/src/assets/inspired.mp4";
+import blackbg from "/src/assets/blackbg.mp4";
+import { useNavigate } from "react-router-dom";
+
+import "./responsive-styles.css";
+
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+function Homepage() {
+  const cursorDotRef = useRef(null);
+  const cursorCircleRef = useRef(null);
+  const loaderRef = useRef(null);
+  const progressBarRef = useRef(null);
+  const headerRef = useRef(null);
+  const heroRef = useRef(null);
+  const featuresRef = useRef(null);
+  const featureItemsRef = useRef([]);
+  const pricingRef = useRef(null); // New reference for Pricing section
+  const horizontalScrollRef = useRef(null);
+  const parallaxRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  function checkDeviceType() {
+    return window.matchMedia("(min-width: 1024px)").matches
+      ? "desktop"
+      : "mobile";
+  }
+  const deviceType = checkDeviceType();
+  console.log(`The current device is a ${deviceType}.`);
+
+  useEffect(() => {
+    // Loader animation with progress bar
+    const tl = gsap.timeline();
+
+    // Animate progress bar width
+    tl.to(progressBarRef.current, {
+      width: "100%",
+      duration: 5,
+      ease: "power4.inOut",
+    }).to(
+      loaderRef.current,
+      {
+        yPercent: -100,
+        duration: 2,
+        ease: "power4.inOut",
+        onComplete: () => setIsLoading(false),
+      },
+      "-=1"
+    );
+
+    // Cursor effect
+    const moveCursor = (e) => {
+      gsap.to(cursorDotRef.current, {
+        x: e.clientX,
+        y: e.clientY,
+        duration: 0,
+      });
+      gsap.to(cursorCircleRef.current, {
+        x: e.clientX,
+        y: e.clientY,
+        duration: 0.15,
+      });
+    };
+
+    window.addEventListener("mousemove", moveCursor);
+
+    // Header animation
+    gsap.fromTo(
+      headerRef.current.children,
+      { opacity: 0, y: -50 },
+      {
+        opacity: 1,
+        y: 0,
+        stagger: 0.2,
+        duration: 1,
+        ease: "power3.out",
+        delay: 2,
+      }
+    );
+
+    // Hero section animation
+    gsap.fromTo(
+      heroRef.current.children,
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        stagger: 0.3,
+        duration: 1,
+        ease: "power3.out",
+        delay: 2.5,
+      }
+    );
+
+    // Enhanced Features section animation
+    ScrollTrigger.create({
+      trigger: featuresRef.current,
+      start: "top 80%",
+      onEnter: () => {
+        gsap.fromTo(
+          featuresRef.current.querySelector("h3"),
+          { opacity: 0, y: 50 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: "power3.out",
+          }
+        );
+
+        gsap.fromTo(
+          featureItemsRef.current,
+          {
+            opacity: 0,
+            y: 100,
+            scale: 0.8,
+            rotationX: 45,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            rotationX: 0,
+            stagger: 0.2,
+            duration: 1,
+            ease: "back.out(1.7)",
+            transformOrigin: "50% 50% -50",
+            onComplete: () => {
+              featureItemsRef.current.forEach((item) => {
+                gsap.to(item, {
+                  y: 10,
+                  yoyo: true,
+                  repeat: -1,
+                  duration: 1.5,
+                  ease: "sine.inOut",
+                });
+              });
+            },
+          }
+        );
+      },
+      once: true,
+    });
+
+    // Pricing section animation
+    ScrollTrigger.create({
+      trigger: pricingRef.current,
+      start: "top 80%",
+      onEnter: () => {
+        gsap.fromTo(
+          pricingRef.current.querySelector("h3"),
+          { opacity: 0, y: 50 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: "power3.out",
+          }
+        );
+
+        gsap.fromTo(
+          pricingRef.current.querySelectorAll(".pricing-plan"),
+          { opacity: 0, y: 100 },
+          {
+            opacity: 1,
+            y: 0,
+            stagger: 0.2,
+            duration: 1,
+            ease: "back.out(1.7)",
+          }
+        );
+      },
+      once: true,
+    });
+
+    // Horizontal scroll section
+    const horizontalSections = gsap.utils.toArray(
+      horizontalScrollRef.current.children
+    );
+
+    // gsap.to(horizontalSections, {
+    //   xPercent: -100 * (horizontalSections.length - 1),
+    //   ease: "none",
+    //   scrollTrigger: {
+    //     trigger: horizontalScrollRef.current,
+    //     pin: true,
+    //     scrub: 1,
+    //     snap: 1 / (horizontalSections.length - 1),
+    //     end: () => "+=" + horizontalScrollRef.current.offsetWidth,
+
+    //     if(isDesktop){
+
+    //     onEnter: () => {
+    //       gsap.to(headerRef.current, {
+    //         y: -100,
+    //         opacity: 0,
+    //         duration: 0.5,
+    //         ease: "power3.out",
+    //       });
+    //     },
+    //     onLeaveBack: () => {
+    //       gsap.to(headerRef.current, {
+    //         y: 0,
+    //         opacity: 1,
+    //         duration: 0.5,
+    //         ease: "power3.out",
+    //       });
+    //     },
+
+    if (deviceType === "desktop") {
+      // Execute code specific to desktop
+      gsap.to(horizontalSections, {
+        xPercent: -100 * (horizontalSections.length - 1),
+        ease: "none",
+        scrollTrigger: {
+          trigger: horizontalScrollRef.current,
+          pin: true,
+          scrub: 1,
+          snap: 1 / (horizontalSections.length - 1),
+          end: () => "+=" + horizontalScrollRef.current.offsetWidth,
+          onEnter: () => {
+            gsap.to(headerRef.current, {
+              y: -100,
+              opacity: 1,
+              duration: 0.5,
+              ease: "power3.out",
+            });
+          },
+          onLeaveBack: () => {
+            gsap.to(headerRef.current, {
+              y: 0,
+              opacity: 1,
+              duration: 0.5,
+              ease: "power3.out",
+            });
+          },
+        },
+      });
+    } else {
+      gsap.to(horizontalSections, {
+        xPercent: -100 * (horizontalSections.length - 1),
+        ease: "none",
+        scrollTrigger: {
+          trigger: horizontalScrollRef.current,
+          pin: true,
+          scrub: 1,
+          snap: 1 / (horizontalSections.length - 1),
+          end: () => "+=" + horizontalScrollRef.current.offsetWidth,
+          // onEnter: () => {
+          //   gsap.to(headerRef.current, {
+          //     y: -100,
+          //     opacity: 1,
+          //     duration: 0.5,
+          //     ease: "power3.out",
+          //   });
+          // },
+          // onLeaveBack: () => {
+          //   gsap.to(headerRef.current, {
+          //     y: 0,
+          //     opacity: 1,
+          //     duration: 0.5,
+          //     ease: "power3.out",
+          //   });
+          // },
+        },
+      });
+      console.log("Mobile-specific code can be executed here.");
+    }
+
+    //   },
+    // });
+
+    // Parallax effect
+    // gsap.to(parallaxRef.current, {
+    //   yPercent: -50,
+    //   ease: "none",
+    //   scrollTrigger: {
+    //     trigger: parallaxRef.current,
+    //     scrub: true,
+    //   },
+    // });
+
+    return () => {
+      window.removeEventListener("mousemove", moveCursor);
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
+  }, []);
+
+  const handleHover = (isHovering) => {
+    gsap.to(cursorCircleRef.current, {
+      scale: isHovering ? 1.5 : 1,
+      opacity: isHovering ? 1 : 0.5,
+      duration: 0.3,
+    });
+  };
+
+  const handleMenuItemClick = (sectionId) => {
+    if (deviceType === "mobile") {
+      setIsMenuOpen(false);
+      setTimeout(() => {
+        const section = document.getElementById(sectionId);
+        section?.scrollIntoView({ behavior: "smooth" });
+      }, 300); // Adding delay to ensure menu closes before scrolling
+    }
+  };
+
+  return (
+    <div className="bg-black text-white min-h-screen overflow-x-hidden font-sans cursor-none">
+      {/* Custom Cursor */}
+      <div
+        ref={cursorDotRef}
+        id="cursor-dot"
+        className="fixed w-1.5 h-1.5 bg-white rounded-full pointer-events-none z-50 transform -translate-x-1/2 -translate-y-1/2"
+      ></div>
+      <div
+        ref={cursorCircleRef}
+        id="cursor-circle"
+        className="fixed w-10 h-10 border border-white rounded-full pointer-events-none z-50 transform -translate-x-1/2 -translate-y-1/2"
+      ></div>
+
+      {/* Loader */}
+      <div
+        ref={loaderRef}
+        id="loader"
+        className={`fixed inset-0 bg-gradient-to-r from-purple-700 via-blue-600 to-teal-500 z-50 flex flex-col items-center justify-center ${
+          isLoading ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <h1 className="text-6xl font-bold mb-4">ANVESHA</h1>
+        <p className="text-xl mb-8">
+          Loading the best experience of coding for you...
+        </p>
+        <div className="relative w-3/4 max-w-xl bg-gray-800 rounded-lg p-4">
+          <div
+            ref={progressBarRef}
+            className="h-4 bg-blue-400 rounded-lg"
+            style={{ width: "0%" }}
+          ></div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div
+        className={`transition-opacity duration-1000 ${
+          isLoading ? "opacity-0" : "opacity-100"
+        }`}
+      >
+        <header
+          ref={headerRef}
+          className="fixed top-0 left-0 right-0 flex justify-between items-center p-6 z-40 bg-black transition-transform duration-500"
+        >
+          <a
+            href="#"
+            className="hover:text-blue-400 transition-colors"
+            onMouseEnter={() => handleHover(true)}
+            onMouseLeave={() => handleHover(false)}
+          >
+            <h1 className="text-3xl font-bold">ANVESHA</h1>
+          </a>
+
+          <button
+            className="menu-button"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+
+          <nav className={isMenuOpen ? "active" : ""}>
+          <ul className={`flex ${deviceType === 'mobile' ? 'space-x-0' : 'space-x-6'} items-center justify-center`}>
+              <li>
+                <a
+                  href="#"
+                  className="hover:text-blue-400 transition-colors"
+                  onMouseEnter={() => handleHover(true)}
+                  onMouseLeave={() => handleHover(false)}
+                >
+                  Home
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="hover:text-blue-400 transition-colors"
+                  onMouseEnter={() => handleHover(true)}
+                  onMouseLeave={() => handleHover(false)}
+                >
+                  Features
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="hover:text-blue-400 transition-colors"
+                  onMouseEnter={() => handleHover(true)}
+                  onMouseLeave={() => handleHover(false)}
+                >
+                  About
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="hover:text-blue-400 transition-colors"
+                  onMouseEnter={() => handleHover(true)}
+                  onMouseLeave={() => handleHover(false)}
+                >
+                  Contact
+                </a>
+              </li>
+              <li onClick={() => handleMenuItemClick('pricing')}>
+                <a
+                  href="#pricing"
+                  className="hover:text-blue-400 transition-colors"
+                  onMouseEnter={() => handleHover(true)}
+                  onMouseLeave={() => handleHover(false)}
+                >
+                  Pricing
+                </a>
+              </li>
+              <li>
+                <button
+                  onClick={() => navigate("/login_signup")}
+                  className="bg-blue-500 text-white px-3 py-2 rounded-full text-lg font-semibold hover:bg-blue-600 transition-colors"
+                  onMouseEnter={() => handleHover(true)}
+                  onMouseLeave={() => handleHover(false)}
+                >
+                  Login/Signup
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </header>
+
+        <main>
+          <section
+            ref={heroRef}
+            id="hero"
+            className="h-screen flex flex-col justify-center items-center text-center px-4"
+          >
+            <video
+              className="absolute inset-0 w-full h-full object-cover"
+              src={blackbg}
+              autoPlay
+              loop
+              muted
+            ></video>
+            <h2 className="text-8xl font-bold mb-6 leading-tight">
+              COLLABORATIVE
+              <br />
+              CODING
+              <br />
+              REDEFINED
+            </h2>
+            <p className="text-xl mb-8 max-w-2xl">
+              Experience the future of collaborative coding with our
+              cutting-edge online compiler.
+            </p>
+            <button
+              className="bg-blue-500 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-blue-600 transition-colors"
+              onMouseEnter={() => handleHover(true)}
+              onMouseLeave={() => handleHover(false)}
+            >
+              Get Started
+            </button>
+          </section>
+
+          <section
+            ref={featuresRef}
+            id="features"
+            className="py-16 px-4 bg-gray-900"
+          >
+            <h3 className="text-6xl font-bold text-center mb-12">Features</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {[
+                "Seamless Integration",
+                "Efficiency Boost",
+                "Innovative Design",
+                "Inspiration for Growth",
+              ].map((feature, index) => (
+                <div
+                  key={index}
+                  ref={(el) => (featureItemsRef.current[index] = el)}
+                  className="p-6 bg-gray-800 rounded-lg text-center"
+                >
+                  <h4 className="text-2xl font-bold mb-4">{feature}</h4>
+                  <p className="text-lg">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section
+            ref={horizontalScrollRef}
+            id="horizontal-scroll"
+            className="flex overflow-x-hidden"
+          >
+            <div className="flex-shrink-0 w-screen h-screen flex items-center justify-center">
+              <video
+                className="absolute inset-0 w-full h-full object-cover"
+                src={seamlessVideo}
+                autoPlay
+                loop
+                muted
+              ></video>
+              if (deviceType === 'desktop')
+              {
+                <p className="absolute top-6 right-6 text-xs flex  font-bold  pr-auto pl-auto text-white bg-black">
+                  keep Scrolling (it's a Horizontal Scroller)...
+                </p>
+              }
+              <h2 className="absolute top-6 right-6 text-6xl font-bold mt-5 pt-6 pr-5 text-white bg-black">
+                ENJOY <br /> SEAMLESS <br /> CODING
+              </h2>
+            </div>
+
+            <div className="flex-shrink-0 w-screen h-screen flex items-center justify-center">
+              <video
+                className="absolute inset-0 w-full h-full object-cover"
+                src={efficientVideo}
+                autoPlay
+                loop
+                muted
+              ></video>
+              <h2 className="absolute top-6 right-6 text-6xl font-bold mt-5 pt-8 pr-5 text-white">
+                EFFICIENCY <br /> AT ITS <br /> PEAK
+              </h2>
+            </div>
+
+            <div className="flex-shrink-0 w-screen h-screen flex items-center justify-center">
+              <video
+                className="absolute inset-0 w-full h-full object-cover"
+                src={innovationVideo}
+                autoPlay
+                loop
+                muted
+              ></video>
+              <h2 className="absolute top-6 right-6 text-6xl font-bold mt-5 pt-8 pr-5 text-white">
+                WE STAND
+                <br />
+                FOR <br /> INNOVATION
+              </h2>
+            </div>
+
+            <div className="flex-shrink-0 w-screen h-screen flex items-center justify-center">
+              <video
+                className="absolute inset-0 w-full h-full object-cover"
+                src={inspiredVideo}
+                autoPlay
+                loop
+                muted
+              ></video>
+              <h2 className="absolute top-6 right-6 text-6xl font-bold mt-5 pt-8 pr-5 text-white">
+                FOR CODERS <br /> BY THE <br /> CODERS
+              </h2>
+            </div>
+          </section>
+
+          <section
+            ref={pricingRef}
+            id="pricing"
+            className="py-10 px-4 bg-gray-900"
+          >
+            <h3 className="text-6xl font-bold text-center mb-12">Pricing</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="pricing-plan p-6 bg-gray-800 rounded-lg text-center hover:bg-black">
+                <h4 className="text-2xl font-bold mb-4">Free Plan</h4>
+                <p className="text-lg mb-4">
+                  Perfect for students, hobbyists, or anyone looking to explore
+                  the basics of Anvesha.
+                </p>
+                <ul className="text-left mb-4">
+                  <li>Core compiler functionalities</li>
+                  <li>Limited usage per month</li>
+                  <li>Basic support and community forums</li>
+                  <li>Ad-supported environment</li>
+                </ul>
+                <p className="text-lg font-semibold">Usage Limits:</p>
+                <ul className="text-left mb-4">
+                  <li>Up to 100 compilations per month</li>
+                  <li>Maximum file size: 10 MB</li>
+                  <li>1 active project</li>
+                </ul>
+              </div>
+              <div className="pricing-plan p-6 bg-gray-800 rounded-lg text-center  hover:bg-black">
+                <h4 className="text-2xl font-bold mb-4">Basic Plan</h4>
+                <p className="text-lg mb-4">$10/month or $100/year</p>
+                <ul className="text-left mb-4">
+                  <li>All Free Plan features</li>
+                  <li>Ad-free environment</li>
+                  <li>Enhanced support with priority response</li>
+                  <li>
+                    Access to advanced compiler settings and optimizations
+                  </li>
+                  <li>Unlimited compilations</li>
+                  <li>Maximum file size: 50 MB</li>
+                  <li>5 active projects</li>
+                </ul>
+                <p className="text-lg font-semibold">Usage Limits:</p>
+                <ul className="text-left mb-4">
+                  <li>Up to 1,000 compilations per month</li>
+                </ul>
+              </div>
+              <div className="pricing-plan p-6 bg-gray-800 rounded-lg text-center  hover:bg-black">
+                <h4 className="text-2xl font-bold mb-4">Pro Plan</h4>
+                <p className="text-lg mb-4">$25/month or $250/year</p>
+                <ul className="text-left mb-4">
+                  <li>All Basic Plan features</li>
+                  <li>Dedicated support with faster response times</li>
+                  <li>Customizable compiler environments</li>
+                  <li>API access for integration with other tools</li>
+                  <li>Collaboration tools for team projects</li>
+                  <li>Maximum file size: 100 MB</li>
+                  <li>20 active projects</li>
+                </ul>
+                <p className="text-lg font-semibold">Usage Limits:</p>
+                <ul className="text-left mb-4">
+                  <li>Up to 5,000 compilations per month</li>
+                </ul>
+              </div>
+              <div className="pricing-plan p-6 bg-gray-800 rounded-lg text-center  hover:bg-black">
+                <h4 className="text-2xl font-bold mb-4">Enterprise Plan</h4>
+                <p className="text-lg mb-4">Custom pricing based on needs</p>
+                <ul className="text-left mb-4">
+                  <li>All Pro Plan features</li>
+                  <li>Dedicated account manager</li>
+                  <li>Priority support with 24/7 availability</li>
+                  <li>Advanced security features</li>
+                  <li>
+                    Custom integrations and on-premises deployment options
+                  </li>
+                  <li>Unlimited file size</li>
+                  <li>Unlimited active projects</li>
+                </ul>
+                <p className="text-lg font-semibold">Usage Limits:</p>
+                <ul className="text-left mb-4">
+                  <li>Unlimited compilations</li>
+                </ul>
+              </div>
+            </div>
+            <div className="text-center mt-8">
+              <p className="text-lg mb-4">Add-Ons:</p>
+              <ul className="text-left mx-auto inline-block">
+                <li>Additional Compilations: $5 per 1,000 compilations</li>
+                <li>Extra Storage: $10 per 50 GB</li>
+                <li>Advanced Analytics: $15/month</li>
+              </ul>
+            </div>
+          </section>
+
+          <section
+            ref={parallaxRef}
+            id="parallax"
+            className="h-screen flex items-center justify-center relative"
+          >
+            <div className="absolute inset-0 bg-gradient-to-b from-black to-blue-900"></div>
+            <h2 className="text-7xl font-bold text-center z-10">
+              ELEVATE YOUR CODING EXPERIENCE
+            </h2>
+          </section>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+export default Homepage;

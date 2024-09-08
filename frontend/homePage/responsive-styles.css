@@ -1,0 +1,150 @@
+/* responsive-styles.css */
+
+/* Mobile-first approach */
+@media screen and (max-width: 768px) {
+  /* Header and Navigation */
+  header {
+    padding: 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+
+  header nav {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 100;
+  }
+
+  header nav.active {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  header nav ul {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header nav ul li {
+    margin: 1rem 0;
+  }
+
+  /* Menu Button */
+  .menu-button {
+    display: block;
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1001;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .menu-button span {
+    display: block;
+    width: 30px;
+    height: 3px;
+    margin: 5px 0;
+    background-color: white;
+    transition: 0.4s;
+  }
+
+  .menu-button.active span:nth-child(1) {
+    transform: rotate(-45deg) translate(-5px, 6px);
+  }
+
+  .menu-button.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-button.active span:nth-child(3) {
+    transform: rotate(45deg) translate(-5px, -6px);
+  }
+
+  /* Hero Section */
+  #hero {
+    padding-top: 80px; /* Add padding to account for fixed header */
+  }
+
+  #hero h2 {
+    font-size: 2.8rem;
+  }
+
+  #hero p {
+    font-size: 1rem;
+  }
+
+  /* Features Section */
+  #features .grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Horizontal Scroll Section */
+  #horizontal-scroll {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-top: 80px; /* Add padding to account for fixed header */
+  }
+
+  #horizontal-scroll > div {
+    scroll-snap-align: start;
+    min-height: calc(100vh - 80px); /* Adjust height to account for fixed header */
+  }
+
+  #horizontal-scroll h2 {
+    font-size: 2rem;
+    padding: 1rem;
+  }
+
+  /* Pricing Section */
+  #pricing .grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Parallax Section */
+  #parallax h2 {
+    font-size: 3rem;
+  }
+
+  #loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+  }
+
+  #loader p {
+    font-size: medium;
+    margin: 2;
+  }
+
+  /* Custom Cursor */
+  #cursor-dot,
+  #cursor-circle {
+    display: none;
+  }
+}
+
+/* Tablet and larger screens */
+@media screen and (min-width: 769px) {
+  .menu-button {
+    display: none;
+  }
+
+  header nav {
+    display: block !important;
+  }
+}
