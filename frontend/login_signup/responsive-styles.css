@@ -1,0 +1,143 @@
+/* General Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Full screen container */
+.min-h-screen {
+    min-height: 100vh;
+}
+
+/* Video background */
+video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+/* Form container */
+.relative {
+    position: relative;
+}
+
+.bg-black {
+    background-color: #000;
+}
+
+.text-white {
+    color: #fff;
+}
+
+.p-6 {
+    padding: 1.5rem;
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+.shadow-lg {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Styles */
+button {
+    cursor: pointer;
+}
+
+.bg-blue-600 {
+    background-color: #2563eb;
+}
+
+.bg-blue-700 {
+    background-color: #1d4ed8;
+}
+
+.bg-gray-700 {
+    background-color: #374151;
+}
+
+.bg-gray-900 {
+    background-color: #111827;
+}
+
+.bg-red-600 {
+    background-color: #dc2626;
+}
+
+.bg-red-700 {
+    background-color: #b91c1c;
+}
+
+.text-blue-400 {
+    color: #60a5fa;
+}
+
+.text-red-500 {
+    color: #f87171;
+}
+
+.hover\:bg-blue-700:hover {
+    background-color: #1d4ed8;
+}
+
+.hover\:bg-red-700:hover {
+    background-color: #b91c1c;
+}
+
+.transition-colors {
+    transition: background-color 0.3s;
+}
+
+/* Flexbox Utilities */
+.flex {
+    display: flex;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.relative {
+    position: relative;
+}
+
+.space-y-4 > * + * {
+    margin-top: 1rem;
+}
+
+.max-w-md {
+    max-width: 28rem;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 480px) {
+    .p-6 {
+        padding: 1rem;
+    }
+
+    .text-3xl {
+        font-size: 1.875rem;
+    }
+
+    .text-lg {
+        font-size: 1.125rem;
+    }
+
+    .w-full {
+        width: 100%;
+    }
+
+    .rounded-full {
+        border-radius: 9999px;
+    }
+}
