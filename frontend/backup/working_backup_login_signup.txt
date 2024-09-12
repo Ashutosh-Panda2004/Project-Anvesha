@@ -1,0 +1,175 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { gsap } from 'gsap';
+import axios from 'axios';
+import { useAuth0 } from '@auth0/auth0-react';
+import binarybg from '../assets/binarybg.mp4';
+
+function LoginSignup() {
+  const [isLogin, setIsLogin] = useState(true);
+  const [formData, setFormData] = useState({
+    name: '',
+    dob: '',
+    phone: '',
+    email: '',
+    username: '',
+    country: '',
+    state: '',
+    city: '',
+    profession: '',
+    password: ''
+  });
+  const [error, setError] = useState('');
+
+  const { loginWithRedirect } = useAuth0();
+
+  const formRef = useRef(null);
+  const errorRef = useRef(null);
+  const formContainerRef = useRef(null);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    try {
+      if (isLogin) {
+        const response = await axios.post('/api/login', { 
+          identifier: formData.email || formData.username, 
+          password: formData.password 
+        });
+        console.log('Login successful', response.data);
+        // Handle successful login (e.g., store token, redirect)
+      } else {
+        const response = await axios.post('/api/signup', formData);
+        console.log('Signup successful', response.data);
+        // Handle successful signup (e.g., show success message, switch to login)
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'An error occurred');
+    }
+  };
+
+  useEffect(() => {
+    gsap.fromTo(
+      formContainerRef.current,
+      { opacity: 0, y: -50 },
+      { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }
+    );
+  }, []);
+
+  useEffect(() => {
+    if (error) {
+      gsap.fromTo(
+        errorRef.current,
+        { opacity: 0, y: -20 },
+        { opacity: 1, y: 0, duration: 0.5, ease: 'power1.out' }
+      );
+    }
+  }, [error]);
+
+  const handleGoogleLogin = () => {
+    loginWithRedirect({
+      connection: 'google-oauth2',  // Ensure this matches the connection name in Auth0
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-black text-white flex items-center justify-center relative">
+      <video
+        className="absolute inset-0 w-full h-full object-cover"
+        src={binarybg}
+        autoPlay
+        loop
+        muted
+      ></video>
+      <div ref={formContainerRef} className="relative bg-black p-6 rounded-lg shadow-lg w-full max-w-md h-auto flex flex-col items-center">
+        <h2 className="text-3xl font-bold mb-4 text-center">
+          {isLogin ? 'Login' : 'Sign Up'}
+        </h2>
+        <div className="flex mb-4">
+          <button
+            onClick={() => setIsLogin(true)}
+            className={`px-4 py-2 rounded-l-full ${isLogin ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'} transition-colors`}
+          >
+            Login
+          </button>
+          <button
+            onClick={() => setIsLogin(false)}
+            className={`px-4 py-2 rounded-r-full ${!isLogin ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'} transition-colors`}
+          >
+            Sign Up
+          </button>
+        </div>
+        <form ref={formRef} onSubmit={handleSubmit} className="w-full space-y-4">
+          {isLogin ? (
+            <>
+              <div>
+                <label className="block mb-1 text-gray-300">Email or Username</label>
+                <input
+                  type="text"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full bg-gray-900 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+                  placeholder="Enter your email or username"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block mb-1 text-gray-300">Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full bg-gray-900 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+                  placeholder="Enter your password"
+                  required
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Signup fields here */}
+            </>
+          )}
+          {error && (
+            <p ref={errorRef} className="text-red-500 text-sm mb-4">
+              {error}
+            </p>
+          )}
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white px-4 py-2 rounded-full text-lg font-semibold hover:bg-blue-700 transition-colors"
+          >
+            {isLogin ? 'Login' : 'Sign Up'}
+          </button>
+        </form>
+
+        <div className='w-full mt-4'>
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full bg-red-600 text-white px-4 py-2 rounded-full text-lg font-semibold hover:bg-red-700 transition-colors"
+          >
+            Login with Google
+          </button>
+        </div>
+
+        <p className="mt-4 text-center">
+          {isLogin ? "Don't have an account?" : 'Already have an account?'}
+          <button
+            className="ml-2 text-blue-400 hover:underline"
+            onClick={() => setIsLogin(!isLogin)}
+          >
+            {isLogin ? 'Sign Up' : 'Login'}
+          </button>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default LoginSignup;
